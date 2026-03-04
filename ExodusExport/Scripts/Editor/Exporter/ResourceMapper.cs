@@ -304,6 +304,8 @@ namespace SceneExport{
 			return prefabMapper.getId(linkedPrefab);
 		}
 		
+		public bool excludeSkinnedMeshes = false;
+		
 		void onNewRootPrefab(GameObject rootPrefab){
 			var newMapper = new GameObjectMapper();
 			newMapper.gatherObjectIds(rootPrefab);
@@ -311,8 +313,10 @@ namespace SceneExport{
 				foreach(var meshFilter in curObj.GetComponents<MeshFilter>()){
 					getOrRegMeshId(meshFilter);
 				}
-				foreach(var meshRend in curObj.GetComponents<SkinnedMeshRenderer>()){
-					getOrRegMeshId(meshRend, null);
+				if (!excludeSkinnedMeshes){
+					foreach(var meshRend in curObj.GetComponents<SkinnedMeshRenderer>()){
+						getOrRegMeshId(meshRend, null);
+					}
 				}
 			}
 			prefabObjects.Add(rootPrefab, newMapper);

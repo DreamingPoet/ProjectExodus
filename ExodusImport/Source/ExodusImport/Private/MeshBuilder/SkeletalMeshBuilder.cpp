@@ -517,6 +517,7 @@ void SkeletalMeshBuilder::setupSkeletalMesh(USkeletalMesh *skelMesh, const JsonM
 #else
 	new(importModel->LODModels)FSkeletalMeshLODModel();//????
 #endif
+	skelMesh->AddLODInfo();
 	//I suppose it does same thing as calling new and then Add()
 	auto &lodModel = importModel->LODModels[0];
 
