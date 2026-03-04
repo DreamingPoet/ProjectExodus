@@ -36,11 +36,25 @@ namespace SceneExport{
 			var prefab = getLinkedPrefab(obj);
 			if (!prefab)
 				return null;
+#if UNITY_2018_3_OR_NEWER
+			var root = PrefabUtility.GetOutermostPrefabInstanceRoot(prefab);
+#else
 			var root = PrefabUtility.FindPrefabRoot(prefab);
+#endif
 			return root;
 		}
 		
 		public static GameObject getLinkedPrefab(GameObject obj){
+#if UNITY_2018_3_OR_NEWER
+			var type = PrefabUtility.GetPrefabAssetType(obj);
+			if (type == PrefabAssetType.Model || type == PrefabAssetType.Regular || type == PrefabAssetType.Variant) {
+				return obj;
+			}
+			var status = PrefabUtility.GetPrefabInstanceStatus(obj);
+			if (status != PrefabInstanceStatus.Connected)
+				return null;
+			var source = PrefabUtility.GetCorrespondingObjectFromSource(obj);
+#else
 			var prefType = PrefabUtility.GetPrefabType(obj);
 			if ((prefType == PrefabType.ModelPrefab) || (prefType == PrefabType.Prefab)){
 				return obj;
@@ -48,6 +62,7 @@ namespace SceneExport{
 			if ((prefType != PrefabType.ModelPrefabInstance) && (prefType != PrefabType.PrefabInstance))
 				return null;
 			var source = PrefabUtility.GetCorrespondingObjectFromSource(obj);
+#endif
 			if (!source)
 				return null;
 			var sourceObj = source as GameObject;
